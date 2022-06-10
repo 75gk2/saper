@@ -1,5 +1,5 @@
 class Ui {
-    nick
+    name
 
     constructor() {
         const nickInput = document.getElementById("nickInput")
@@ -9,7 +9,7 @@ class Ui {
         this.userslist = document.getElementById("usersList")
         this.smallTable = document.getElementById("smallTable")
         submit.addEventListener("click", () => {
-            this.nick = nickInput.value
+            this.name = nickInput.value
             net.send("log in", nickInput.value)
             nickInput.value = ""
         })

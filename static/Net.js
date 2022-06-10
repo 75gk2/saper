@@ -5,15 +5,17 @@ class Net {
         this.socket = io();
 
         this.socket.on("accepted user", data=>{
-            console.log(data)
             if(data)
             {
                 ui.accepted()
-            }
-            this.socket.on("board update", boardUp=>{
-                console.log(boardUp.board)
-                ui.smallTableGenerate(boardUp.board)
+                this.socket.on("board preview", boardUp=>{
+                    console.log(boardUp.board)
+                    ui.smallTableGenerate(boardUp.board)
+                })
+                this.socket.on("fields state", fields=>{
+                    game.updateFieldsState(fields)
             })
+            }
         })
 
         this.socket.on("users list", data=>{
