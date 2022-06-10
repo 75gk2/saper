@@ -5,6 +5,7 @@ class Ui {
         const nickInput = document.getElementById("nickInput")
         const submit = document.getElementById("submit")
         const reset = document.getElementById("reset")
+        this.players = document.getElementById("players")
         this.userslist = document.getElementById("usersList")
         this.smallTable = document.getElementById("smallTable")
         submit.addEventListener("click", () => {
@@ -14,22 +15,27 @@ class Ui {
         })
         reset.addEventListener("click", () =>{
             console.log("reset")
+            net.reset();
         });
     }
 
     accepted() {
-        const loginDiv = document.getElementById("logIn")
-        loginDiv.innerHTML = `<h2>Twój nick to ${this.nick}!`
+        const login = document.getElementById("ui")
+        login.classList.add("uiGame")
     }
 
     updateUsersList(list) {
         let s = ""
-        s += `<tr><th>index</th><th>nick</th></tr>`
+        s += `Gracze:`
         list.forEach((m, i) => {
             console.log(m, i)
-            s += `<tr><th>${i}</th><th>${m.name}</th></tr>`
+            s += `<p>${i + 1}. ${m.name}</p>`
+            if(i == 1){
+                s += `<p>(Gra trwa)</p>`
+            }
         })
-        this.userslist.innerHTML = s
+        
+        this.players.innerHTML = s
     }
 
     smallTableGenerate(tab) {
@@ -43,5 +49,10 @@ class Ui {
             s+=o
         })
         this.smallTable.innerHTML = s
+    }
+
+    refresh(){
+        window.location.reload();
+        console.log("odświerzono")
     }
 }

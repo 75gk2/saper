@@ -1,3 +1,4 @@
+const { json } = require("body-parser")
 const express = require("express")
 const http = require("http")
 const {Server} = require("socket.io")
@@ -29,6 +30,11 @@ function startGame(){
     io.emit("board update",{board:Bombs.generate()})
 }
 
+app.post('/reset', (socket) => {
+    users = []
+    console.log("zresetowano")
+    io.emit("game reset", true)
+})
 
 app.use(express.static("static"))
 server.listen(3000, () => console.log("http://127.0.0.1:3000"))

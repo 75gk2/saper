@@ -19,10 +19,22 @@ class Net {
         this.socket.on("users list", data=>{
             ui.updateUsersList(data.players)
         })
+
+        this.socket.on("game reset", () => {
+            ui.refresh()
+        })
     }
+
+
 
     send(event, body) {
         this.socket.emit(event, body)
     }
 
+
+    reset() {
+        fetch("/reset", {
+            method: "post",
+        });
+    }
 }

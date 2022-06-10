@@ -15,13 +15,30 @@ body{
     box-sizing: border-box;
     text-align: center;
 }
+
 .uiStart{
     top:calc(50% - 150px);
     left:calc(50% - 200px);
 }
 .uiGame{
-    top:0;
-    left:0;
+    display: none;
+}
+#players{
+    top:5px;
+    left:5px;
+    font-family: 'Titan One', cursive;
+    width: 200px;
+    height:150px;
+    position:absolute;
+    padding:9px;
+    background-color: #a7d966c8;
+    border: 5px solid #43A367;
+    border-radius: 20px;
+    font-size: 18px;
+    color:#385380;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 0.8;
 }
 #logIn{
     display: flex;
