@@ -35,7 +35,7 @@ class Game {
             map: new THREE.TextureLoader().load("./assets/grassGrid.jpg"),
         })
         const side = 50
-        const blocksNum = 20
+        const blocksNum = 24
         const offset = side/2 - side*blocksNum/2
         const geometry = new THREE.PlaneGeometry(side,side)
         for (let j = 0; j < blocksNum; j++)

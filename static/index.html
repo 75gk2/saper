@@ -7,20 +7,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="three.js"></script>
+    <script src="socket.io.js"></script>
     <script src="Game.js"></script>
     <script src="Main.js"></script>
-<!--    <script src="Net.js"></script>-->
-<!--    <script src="Ui.js"></script>-->
+    <script src="Ui.js"></script>
+    <script src="Net.js"></script>
 
     <style>
         body{
             margin:0;
             overflow: hidden;
         }
+        #ui{
+            position:absolute;
+            top:0;
+            padding:10px;
+            background-color: #0060FF99;
+            color:white;
+        }
+        #logIn{
+            display: flex;
+            flex-direction: column;
+        }
+        #smallTable{
+            position: absolute;
+            pointer-events: none;
+            width: 100vw;
+            height:100vh;
+            top:0;
+            left: 0;
+            padding:15px;
+            text-align: center;
+            vertical-align: center;
+        }
     </style>
 </head>
 <body>
 <div id="root"></div>
+<div id="ui">
+    <div id="logIn">
+        <div id="info">Play saper</div>
+        <label>Your nick<input id="nickInput"></label>
+        <input type="submit" id="submit">
+    </div>
+    <table id = "usersList">
+    </table>
+    <table id="smallTable">
+    </table>
+</div>
 </body>
 
 </html>
