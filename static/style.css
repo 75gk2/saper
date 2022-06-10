@@ -1,0 +1,77 @@
+body{
+    margin:0;
+    overflow: hidden;
+}
+#ui{
+    font-family: 'Titan One', cursive;
+    width: 400px;
+    height:300px;
+    position:absolute;
+    padding:10px;
+    background-color: #a7d966c8;
+    border: 10px solid #43A367;
+    border-radius: 40px;
+    color:#385380;
+    box-sizing: border-box;
+    text-align: center;
+}
+.uiStart{
+    top:calc(50% - 150px);
+    left:calc(50% - 200px);
+}
+.uiGame{
+    top:0;
+    left:0;
+}
+#logIn{
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+    align-items: center;
+}
+#info{
+    margin-top: 10px;
+    font-size:40px;
+    margin-bottom:60px;
+}
+#nickInput{
+    margin-left: 20px;
+}
+#label1{
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+}
+#nickInput{
+    height:30px;
+    font-family: 'Titan One', cursive;
+    background-color: #C6F1A2;
+    color: #385380;
+    border-radius: 5px;
+}
+#submit, #reset{
+    margin-top:20px;
+    width: 160px;
+    font-family: 'Titan One', cursive;
+    height: 27px;
+    background-color: #C6F1A2;
+    border-radius: 5px;
+}
+
+#submit:hover, #reset:hover
+{
+    background-color: #385380;
+    transition: .3s;
+    color:#C6F1A2;
+}
+#smallTable{
+    position: absolute;
+    pointer-events: none;
+    width: 100vw;
+    height:100vh;
+    top:0;
+    left: 0;
+    padding:15px;
+    text-align: center;
+    vertical-align: center;
+}

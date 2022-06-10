@@ -5,7 +5,7 @@ class Game {
         this.camera.position.set(0, 1500, 0)
         this.camera.lookAt(this.scene.position)
         this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setClearColor(0x444444);
+        this.renderer.setClearColor(0x385380);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
         const axes = new THREE.AxesHelper(1000)
