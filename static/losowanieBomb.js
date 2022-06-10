@@ -69,6 +69,7 @@ class Bombs {//tablica jest w pełni ruchoma (kod zadziała z każdym rozmiarem,
             tab[i][num4] = "🧨"
             tab[i][num5] = "🧨"
             tab[i][num6] = "🧨"
+            
         }
 
 //ustalanie ile bomb jest dookoła każdego pola, poza polami z bombą
@@ -241,7 +242,8 @@ class Bombs {//tablica jest w pełni ruchoma (kod zadziała z każdym rozmiarem,
                 }
             }
         }
-
+        tab[0][0] = "🏁"
+        tab[tab.length-1][tab[0].length-1] = "🏁"
 //(Przed pracą z kodem polecam zmienić 🧨 na cokolwiek innego, np x, zamienienie wszystkich zadziała)
 
     return tab
