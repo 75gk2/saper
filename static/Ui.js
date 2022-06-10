@@ -54,4 +54,8 @@ class Ui {
         window.location.reload();
         console.log("odświerzono")
     }
+
+    fullGameAlert(){
+        alert('Gra trwa, jeśli chcesz zakończyć trwającą grę i utworzyć nową naciśnij przycisk "Reset gry"')
+    }
 }

@@ -23,6 +23,10 @@ class Net {
         this.socket.on("game reset", () => {
             ui.refresh()
         })
+
+        this.socket.on("game is full", () => {
+            ui.fullGameAlert()
+        })
     }
 
 

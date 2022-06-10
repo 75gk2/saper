@@ -11,7 +11,7 @@ const io = new Server(server)
 let users = []
 
 io.on("connection", (socket) => {
-    console.log("connection")
+    io.emit("users list", {players: users})
     socket.on("log in", (name) => {
         console.log("log in request:", name)
 
@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
             io.emit("users list", {players: users})
             if (users.length === 2 ) startGame()
         }else{
-            socket.emit("accepted user", false)
+            socket.emit("game is full", true)
         }
     })
 })
@@ -31,6 +31,7 @@ function startGame(){
 }
 
 app.post('/reset', (socket) => {
+    console.log(users)
     users = []
     console.log("zresetowano")
     io.emit("game reset", true)
