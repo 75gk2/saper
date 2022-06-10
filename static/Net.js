@@ -24,4 +24,5 @@ class Net {
     send(event, body) {
         this.socket.emit(event, body)
     }
+
 }

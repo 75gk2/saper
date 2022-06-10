@@ -26,13 +26,12 @@ body{
 #logIn{
     display: flex;
     flex-direction: column;
-    z-index: 9999;
     align-items: center;
 }
 #info{
-    margin-top: 10px;
+    margin-top: 6px;
     font-size:40px;
-    margin-bottom:60px;
+    margin-bottom:40px;
 }
 #nickInput{
     margin-left: 20px;
@@ -50,12 +49,17 @@ body{
     border-radius: 5px;
 }
 #submit, #reset{
-    margin-top:20px;
     width: 160px;
     font-family: 'Titan One', cursive;
     height: 27px;
     background-color: #C6F1A2;
     border-radius: 5px;
+}
+#submit{
+    margin-top:46px;    
+}
+#reset{
+    margin-top: 11px;
 }
 
 #submit:hover, #reset:hover

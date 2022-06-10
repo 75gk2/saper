@@ -1,7 +1,6 @@
 const express = require("express")
 const http = require("http")
 const {Server} = require("socket.io")
-// import Bombs from "./static/losowanieBomb";
 const Bombs = require("./static/losowanieBomb")
 
 

@@ -4,6 +4,7 @@ class Ui {
     constructor() {
         const nickInput = document.getElementById("nickInput")
         const submit = document.getElementById("submit")
+        const reset = document.getElementById("reset")
         this.userslist = document.getElementById("usersList")
         this.smallTable = document.getElementById("smallTable")
         submit.addEventListener("click", () => {
@@ -11,9 +12,9 @@ class Ui {
             net.send("log in", nickInput.value)
             nickInput.value = ""
         })
-
-        nickInput.value = "Player" + Math.floor(Math.random() * 100)
-        submit.click()
+        reset.addEventListener("click", () =>{
+            console.log("reset")
+        });
     }
 
     accepted() {
