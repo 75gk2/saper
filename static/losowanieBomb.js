@@ -243,7 +243,6 @@ class Bombs {//tablica jest w pełni ruchoma (kod zadziała z każdym rozmiarem,
 
 //(Przed pracą z kodem polecam zmienić 🧨 na cokolwiek innego, np x, zamienienie wszystkich zadziała)
 
-        // console.log(tab)
     return tab
    }
 }

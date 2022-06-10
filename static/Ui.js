@@ -28,7 +28,6 @@ class Ui {
         let s = ""
         s += `Gracze:`
         list.forEach((m, i) => {
-            console.log(m, i)
             s += `<p>${i + 1}. ${m.name}</p>`
             if(i == 1){
                 s += `<p>(Gra trwa)</p>`
