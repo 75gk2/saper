@@ -13,7 +13,6 @@ let users = []
 io.on("connection", (socket) => {
     io.emit("users list", {players: users})
     socket.on("log in", (name) => {
-        console.log("log in request:", name)
 
         if (!users.includes(name) && users.length < 2) {
             users.push({name: name, id: socket.id})
@@ -31,9 +30,7 @@ function startGame(){
 }
 
 app.post('/reset', (socket) => {
-    console.log(users)
     users = []
-    console.log("zresetowano")
     io.emit("game reset", true)
 })
 
