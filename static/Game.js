@@ -24,7 +24,7 @@ class Game {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ] //state 0 - covered, state 1 - uncovered
+    ] //0 - covered, 1 - uncovered,  2 - destructed, 3 - demined
     fieldsThreeArray = []
     grassCovered = new THREE.MeshBasicMaterial({
         side: THREE.DoubleSide,
@@ -32,7 +32,15 @@ class Game {
     })
     grassUncovered = new THREE.MeshBasicMaterial({
         side: THREE.DoubleSide,
-        map: new THREE.TextureLoader().load("./assets/dirt.jpg"),
+        map: new THREE.TextureLoader().load("./assets/grassUncovered.jpg"),
+    })
+    grassDestructed = new THREE.MeshBasicMaterial({
+        side: THREE.DoubleSide,
+        map: new THREE.TextureLoader().load("./assets/grassDestructed.jpg"),
+    })
+    grassDemined = new THREE.MeshBasicMaterial({
+        side: THREE.DoubleSide,
+        map: new THREE.TextureLoader().load("./assets/grassDemined.jpg"),
     })
     side = 50
     blocksNum = 24
@@ -78,8 +86,8 @@ class Game {
             this.fieldsThreeArray.push([])
             for (let i = 0; i < this.blocksNum; i++) {
                 const field = new THREE.Mesh(this.geometry, this.grassCovered)
-                field.position.set(j * this.side + this.offset, 0, i * this.side + this.offset)
-                field.data = {x: i, y: j, state: 0}
+                field.position.set(i * this.side + this.offset, 0, j * this.side + this.offset)
+                field.data = {x: j, y: i, state: 0}
                 field.rotation.x = Math.PI / 2
                 this.scene.add(field)
                 this.fieldsThreeArray[j].push(field)
@@ -88,11 +96,24 @@ class Game {
     }
 
     updateFieldsState(fields) {
-        for (let j = 0; j < this.blocksNum; j++)
-            for (let i = 0; i < this.blocksNum; i++) {
-                if (this.fieldsState[j][i] !== fields[j][i]) {
-                    this.fieldsThreeArray[j][i].material = fields[j][i] === 1 ? this.grassUncovered : this.grassCovered
-                    this.fieldsThreeArray[j][i].data.state = fields[j][i]
+        for (let i = 0; i < this.blocksNum; i++)
+            for (let j = 0; j < this.blocksNum; j++) {
+                if (this.fieldsState[i][j] !== fields[i][j]) {
+                    switch (fields[i][j]) {
+                        case 0:
+                            this.fieldsThreeArray[i][j].material = this.grassCovered;
+                            break;
+                        case 1:
+                            this.fieldsThreeArray[i][j].material = this.grassUncovered;
+                            break;
+                        case 2:
+                            this.fieldsThreeArray[i][j].material = this.grassDestructed;
+                            break;
+                        case 3:
+                            this.fieldsThreeArray[i][j].material = this.grassDemined;
+                            break;
+                    }
+                    this.fieldsThreeArray[i][j].data.state = fields[i][j]
                 }
             }
         this.fieldsState = fields
@@ -101,23 +122,32 @@ class Game {
     raycaster() {
         const raycaster = new THREE.Raycaster();
         const mouseVector = new THREE.Vector2()
-
+        window.oncontextmenu = () => false
         window.addEventListener("mousedown", (e) => {
             mouseVector.x = (e.clientX / window.innerWidth) * 2 - 1;
             mouseVector.y = -(e.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouseVector, this.camera);
             const intersects = raycaster.intersectObjects(this.scene.children);
             if (intersects.length > 0) {
-                this.clicked(intersects[0].object)
+                console.log(e.button)
+                if (e.button === 2)
+                    this.demining(intersects[0].object)
+                else
+                    this.clicked(intersects[0].object)
             }
         });
     }
 
     clicked(threeObj) {
-        console.log(threeObj)
-        if (threeObj.data.state === 0) {
-            console.log("2")
-            net.send("uncovering", {x: threeObj.data.x, y: threeObj.data.y, user: ui.name})
-        }
+        // console.log(threeObj)
+        // if (threeObj.data.state === 0) {
+        //     console.log("2")
+        console.log(threeObj.data)
+        net.send("uncovering", {x: threeObj.data.x, y: threeObj.data.y, user: ui.name})
+        // }
+    }
+
+    demining(threeObj) {
+        net.send("demining", {x: threeObj.data.x, y: threeObj.data.y, user: ui.name})
     }
 }
