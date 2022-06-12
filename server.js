@@ -1,4 +1,3 @@
-const {json} = require("body-parser")
 const express = require("express")
 const http = require("http")
 const {Server} = require("socket.io")
@@ -21,7 +20,12 @@ io.on("connection", (socket) => {
     io.emit("users list", {players: users})
 
     socket.on("log in", (name) => {
-        if (!users.includes(name) && users.length < 2) {
+        let nameExists = false
+        users.forEach(u=>{
+            if(u.name === name)
+                nameExists = true
+        })
+        if ( !nameExists && users.length < 2) {
             users.push({name: name, id: socket.id})
             socket.emit("accepted user", true)
             io.emit("users list", {players: users})
@@ -38,29 +42,43 @@ io.on("connection", (socket) => {
 
 function uncoverOrDemine(data, action) {
     users.forEach(u => { //znajdź usera
-        if (u.name === data.user) {
-            getTable((err, doc) => { //tablica ze stanem planszy
-                let fieldsState = doc.value
-                if (fieldsState[data.x][data.y] === 0)  //czy pole jest nieodsłonięte
-                    getBombsPositions((err, doc) => { //tablica z bombami
-                        let positions = doc.value
-                        //TODO: PUNKTACJA KAŻDEGO PRZYPADKU
-                        if (action === "uncover") {//logika dla odkrycia
-                            if (positions[data.x][data.y] === "🧨") { //czy jest tam bomba
-                                fieldsState[data.x][data.y] = 2 //wysadzenie się
-                            } else
-                                fieldsState[data.x][data.y] = 1 //odkryte
-                        } else {//logika dla rozminownia
-                            if (positions[data.x][data.y] === "🧨") { //czy jest tam bomba
-                                fieldsState[data.x][data.y] = 3 //rozminowanie
-                            } else
-                                fieldsState[data.x][data.y] = 1 //nieudana próba rozminowania
-                        }
-                        updateTableAndEmit(fieldsState)         //update
-                    })
-            })
+            if (u.name === data.user) {
+                getTable((err, doc) => { //tablica ze stanem planszy
+                    let fieldsState = doc.value
+                    if (fieldsState[data.x][data.y] === 0)  //czy pole jest nieodsłonięte
+                        getBombsPositions((err, doc) => { //tablica z bombami
+                                let positions = doc.value
+                                //TODO: PUNKTACJA KAŻDEGO PRZYPADKU
+                                let points = 0
+                                if (action === "uncover") {//logika dla odkrycia
+                                    if (positions[data.x][data.y] === "🧨") { //czy jest tam bomba
+                                        fieldsState[data.x][data.y] = 2 //wysadzenie się
+                                        points = -100
+                                    } else {
+                                        fieldsState[data.x][data.y] = 1 //odkryte
+                                        points = 3
+                                    }
+                                } else {//logika dla rozminownia
+                                    points = -5 // cena rozminowania
+                                    if (positions[data.x][data.y] === "🧨") { //czy jest tam bomba
+                                        fieldsState[data.x][data.y] = 3 //rozminowanie
+                                        points += 10
+                                    } else
+                                        fieldsState[data.x][data.y] = 1 //nieudana próba rozminowania
+                                }
+                                updateTableAndEmit(fieldsState)         //update
+                                getMap((err, doc) => {
+                                    const map = doc.value
+                                    map[data.x][data.y] = positions[data.x][data.y]
+                                    updateMapAndEmit(map)
+                                })
+                                changePointsAndEmit(u.name, points)
+                            }
+                        )
+                })
+            }
         }
-    })
+    )
 }
 
 function startGame() {
@@ -68,13 +86,26 @@ function startGame() {
     table[0][0] = 1
     table[23][23] = 1
     updateTableAndEmit(table)
+
+    const points = []
+    users.forEach(u => {
+        points.push({name: u.name, points: 100})
+    })
     const bombsPosition = Bombs.generate()
     coll.update({document: "bombs position"}, {
         document: "bombs position",
         value: bombsPosition
     }, {upsert: true}, function () {
-        io.emit("board preview", {board: bombsPosition})
+        table = JSON.parse(JSON.stringify(table))
+        for (i = 0; i < 24; i++)
+            for (j = 0; j < 24; j++)
+                table[i][j] = '*️⃣'
+        table[0][0] = bombsPosition[0][0]
+        table[23][23] = bombsPosition[23][23]
+        updateMapAndEmit(table)
     })
+
+    updatePointsAndEmit(points)
 }
 
 function getBombsPositions(callback) {
@@ -86,15 +117,51 @@ function getTable(callback) {
 }
 
 function updateTableAndEmit(newTable) {
-    coll.update({document: "fields state"}, {document: "fields state", value: newTable}, {upsert: true}, function () {
+    coll.update({document: "fields state"}, {
+        document: "fields state",
+        value: newTable
+    }, {upsert: true}, function () {
         io.emit("fields state", newTable)
     })
 }
 
+function getMap(callback) {
+    coll.findOne({document: "map"}, (err, doc) => callback(err, doc))
+}
 
-app.post('/reset', (socket) => {
+function updateMapAndEmit(map) {
+    coll.update({document: "map"}, {document: "map", value: map}, {upsert: true}, function () {
+        io.emit("map", map)
+    })
+}
+
+function changePointsAndEmit(user, points) {
+    getPoints((err, doc) => {
+        let currentPoints = doc.value
+        currentPoints = currentPoints.map(e => {
+            if (e.name === user)
+                e.points += points
+            return e
+        })
+        updatePointsAndEmit(currentPoints)
+    })
+}
+
+function getPoints(callback) {
+    coll.findOne({document: "points"}, (err, doc) => callback(err, doc))
+}
+
+function updatePointsAndEmit(points) {
+    coll.update({document: "points"}, {document: "points", value: points}, {upsert: true}, function () {
+        io.emit("points", points)
+    })
+}
+
+
+app.post('/reset', (req, res) => {
     users = []
     io.emit("game reset", true)
+    res.end()
 })
 
 app.use(express.static("static"))

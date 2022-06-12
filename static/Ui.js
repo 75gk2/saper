@@ -1,6 +1,6 @@
 class Ui {
     name
-
+    inGame = false
     constructor() {
         const nickInput = document.getElementById("nickInput")
         const submit = document.getElementById("submit")
@@ -28,8 +28,8 @@ class Ui {
         let s = ""
         s += `Gracze:`
         list.forEach((m, i) => {
-            s += `<p>${i + 1}. ${m.name}</p>`
-            if(i == 1){
+            s += `<p>${i + 1}. ${m.name} ${this.inGame?" : "+m.points:""}</p>`
+            if(i === 1){
                 s += `<p>(Gra trwa)</p>`
             }
         })
@@ -56,6 +56,6 @@ class Ui {
     }
 
     fullGameAlert(){
-        alert('Gra trwa, jeśli chcesz zakończyć trwającą grę i utworzyć nową naciśnij przycisk "Reset gry"')
+        alert('To imię jest już zajęte lub gra trwa\njeśli chcesz zakończyć trwającą grę i utworzyć nową naciśnij przycisk "Reset gry"')
     }
 }
