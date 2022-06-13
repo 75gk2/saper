@@ -4,12 +4,13 @@ const {Server} = require("socket.io")
 const BombsClass = require("./static/losowanieBomb")
 const Bombs = new BombsClass()
 const Datastore = require("nedb")
-
+const port = process.env.PORT || 3000
 
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server)
 let users = []
+let inGame = false
 
 const coll = new Datastore({
     filename: 'collection.db',
@@ -21,11 +22,11 @@ io.on("connection", (socket) => {
 
     socket.on("log in", (name) => {
         let nameExists = false
-        users.forEach(u=>{
-            if(u.name === name)
+        users.forEach(u => {
+            if (u.name === name)
                 nameExists = true
         })
-        if ( !nameExists && users.length < 2) {
+        if (!nameExists && users.length < 2) {
             users.push({name: name, id: socket.id})
             socket.emit("accepted user", true)
             io.emit("users list", {players: users})
@@ -41,44 +42,45 @@ io.on("connection", (socket) => {
 
 
 function uncoverOrDemine(data, action) {
-    users.forEach(u => { //znajdź usera
-            if (u.name === data.user) {
-                getTable((err, doc) => { //tablica ze stanem planszy
-                    let fieldsState = doc.value
-                    if (fieldsState[data.x][data.y] === 0)  //czy pole jest nieodsłonięte
-                        getBombsPositions((err, doc) => { //tablica z bombami
-                                let positions = doc.value
-                                //TODO: PUNKTACJA KAŻDEGO PRZYPADKU
-                                let points = 0
-                                if (action === "uncover") {//logika dla odkrycia
-                                    if (positions[data.x][data.y] === "🧨") { //czy jest tam bomba
-                                        fieldsState[data.x][data.y] = 2 //wysadzenie się
-                                        points = -100
-                                    } else {
-                                        fieldsState[data.x][data.y] = 1 //odkryte
-                                        points = 3
+    if (inGame)
+        users.forEach(u => { //znajdź usera
+                if (u.name === data.user) {
+                    getTable((err, doc) => { //tablica ze stanem planszy
+                        let fieldsState = doc.value
+                        if (fieldsState[data.x][data.y] === 0)  //czy pole jest nieodsłonięte
+                            getBombsPositions((err, doc) => { //tablica z bombami
+                                    let positions = doc.value
+                                    //TODO: PUNKTACJA KAŻDEGO PRZYPADKU
+                                    let points = 0
+                                    if (action === "uncover") {//logika dla odkrycia
+                                        if (positions[data.x][data.y] === "🧨") { //czy jest tam bomba
+                                            fieldsState[data.x][data.y] = 2 //wysadzenie się
+                                            points = -100
+                                        } else {
+                                            fieldsState[data.x][data.y] = 1 //odkryte
+                                            points = 3
+                                        }
+                                    } else {//logika dla rozminownia
+                                        points = -5 // cena rozminowania
+                                        if (positions[data.x][data.y] === "🧨") { //czy jest tam bomba
+                                            fieldsState[data.x][data.y] = 3 //rozminowanie
+                                            points += 10
+                                        } else
+                                            fieldsState[data.x][data.y] = 1 //nieudana próba rozminowania
                                     }
-                                } else {//logika dla rozminownia
-                                    points = -5 // cena rozminowania
-                                    if (positions[data.x][data.y] === "🧨") { //czy jest tam bomba
-                                        fieldsState[data.x][data.y] = 3 //rozminowanie
-                                        points += 10
-                                    } else
-                                        fieldsState[data.x][data.y] = 1 //nieudana próba rozminowania
+                                    updateTableAndEmit(fieldsState)         //update
+                                    getMap((err, doc) => {
+                                        const map = doc.value
+                                        map[data.x][data.y] = positions[data.x][data.y]
+                                        updateMapAndEmit(map)
+                                    })
+                                    changePointsAndEmit(u.name, points)
                                 }
-                                updateTableAndEmit(fieldsState)         //update
-                                getMap((err, doc) => {
-                                    const map = doc.value
-                                    map[data.x][data.y] = positions[data.x][data.y]
-                                    updateMapAndEmit(map)
-                                })
-                                changePointsAndEmit(u.name, points)
-                            }
-                        )
-                })
+                            )
+                    })
+                }
             }
-        }
-    )
+        )
 }
 
 function startGame() {
@@ -104,7 +106,7 @@ function startGame() {
         table[23][23] = bombsPosition[23][23]
         updateMapAndEmit(table)
     })
-
+    inGame = true
     updatePointsAndEmit(points)
 }
 
@@ -162,7 +164,8 @@ app.post('/reset', (req, res) => {
     users = []
     io.emit("game reset", true)
     res.end()
+    inGame = false
 })
 
 app.use(express.static("static"))
-server.listen(3000, () => console.log("http://127.0.0.1:3000"))
+server.listen(port, () => console.log("http://127.0.0.1:3000"))

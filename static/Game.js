@@ -73,6 +73,23 @@ class Game {
 
 
         }, false);
+        this.controls = new PointerLockControls(this.camera, document.body);
+
+
+// add event listener to show/hide a UI (e.g. the game's menu)
+
+        this.controls.addEventListener('lock', function () {
+            console.log("lock")
+            // menu.style.display = 'none';
+
+        });
+
+        this.controls.addEventListener('unlock', function () {
+
+            console.log("unlock")
+            // menu.style.display = 'block';
+
+        });
 
     }
 
@@ -124,6 +141,7 @@ class Game {
         const mouseVector = new THREE.Vector2()
         window.oncontextmenu = () => false
         window.addEventListener("mousedown", (e) => {
+            // canvas.requestPointerLock()
             mouseVector.x = (e.clientX / window.innerWidth) * 2 - 1;
             mouseVector.y = -(e.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouseVector, this.camera);
