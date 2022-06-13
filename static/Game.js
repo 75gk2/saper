@@ -59,7 +59,13 @@ class Game {
 
         // const axes = new THREE.AxesHelper(1000)
         // this.scene.add(axes)
+        const geometry = new THREE.BoxGeometry( 100, 100, 100 );
+        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+        this.opponent = new THREE.Mesh( geometry, material );
+        this.scene.add(this.opponent);
 
+
+        init(this.camera,this.scene);
         this.render()
         this.renderGround()
         this.raycaster()
@@ -97,6 +103,7 @@ class Game {
     }
 
     render = () => {
+        animate();
         requestAnimationFrame(this.render);
         this.renderer.render(this.scene, this.camera);
     }
@@ -144,15 +151,16 @@ class Game {
         const mouseVector = new THREE.Vector2()
         window.oncontextmenu = () => false
         window.addEventListener("mousedown", (e) => {
+            let x = e.clientX
+            let y = e.clientY
+            x = window.innerWidth/2
+            y = window.innerHeight/2
             // canvas.requestPointerLock()
-            mouseVector.x = (e.clientX / window.innerWidth) * 2 - 1;
-            mouseVector.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            mouseVector.x = (x / window.innerWidth) * 2 - 1;
+            mouseVector.y = -(y / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouseVector, this.camera);
             const intersects = raycaster.intersectObjects(this.scene.children);
             if (intersects.length > 0) {
-                // this.controls.lock();
-                init();
-                animate();
                 if (e.button === 2)
                     this.demining(intersects[0].object)
                 else
@@ -165,12 +173,18 @@ class Game {
         // console.log(threeObj)
         // if (threeObj.data.state === 0) {
         //     console.log("2")
-        console.log(threeObj.data)
+        console.log("uncover",threeObj.data)
         net.send("uncovering", {x: threeObj.data.x, y: threeObj.data.y, user: ui.name})
         // }
     }
 
     demining(threeObj) {
+        console.log("demine",threeObj.data)
         net.send("demining", {x: threeObj.data.x, y: threeObj.data.y, user: ui.name})
+    }
+
+    opponentMoved(position){
+        console.log(position)
+        this.opponent.position.set(position.x,50,position.z)
     }
 }

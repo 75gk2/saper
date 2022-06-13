@@ -1,6 +1,5 @@
 class Ui {
     name
-    inGame = false
     constructor() {
         const nickInput = document.getElementById("nickInput")
         const submit = document.getElementById("submit")
@@ -21,6 +20,7 @@ class Ui {
 
     accepted() {
         const login = document.getElementById("ui")
+        document.getElementById("lockGame").classList.add("uiGame")
         login.classList.add("uiGame")
     }
 
@@ -28,7 +28,7 @@ class Ui {
         let s = ""
         s += `Gracze:`
         list.forEach((m, i) => {
-            s += `<p>${i + 1}. ${m.name} ${this.inGame?" : "+m.points:""}</p>`
+            s += `<p>${i + 1}. ${m.name} ${inGame?" : "+m.points:""}</p>`
             if(i === 1){
                 s += `<p>(Gra trwa)</p>`
             }
@@ -47,7 +47,7 @@ class Ui {
             o+="</td>"
             s+=o
         })
-        this.smallTable.innerHTML = s
+        // this.smallTable.innerHTML = s
     }
 
     refresh(){

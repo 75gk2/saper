@@ -17,6 +17,7 @@ const coll = new Datastore({
     autoload: true
 });
 
+
 io.on("connection", (socket) => {
     io.emit("users list", {players: users})
 
@@ -31,15 +32,25 @@ io.on("connection", (socket) => {
             socket.emit("accepted user", true)
             io.emit("users list", {players: users})
             if (users.length === 2) startGame()
+            //ZALOGOWANO POMYŚLNIE
+            socket.on("move", data=>moving(data))
+            socket.on("uncovering", data => uncoverOrDemine(data, "uncover"))
+            socket.on("demining", data => uncoverOrDemine(data, "demine"))
         } else {
             socket.emit("game is full", true)
         }
     })
 
-    socket.on("uncovering", data => uncoverOrDemine(data, "uncover"))
-    socket.on("demining", data => uncoverOrDemine(data, "demine"))
 })
 
+function moving(data) {
+    // console.log("MOOVING")
+    users.forEach(u=>{
+        if(u.name !== data.name){
+            io.to(u.id).emit("opponent moved", {position:data.position})
+        }
+    })
+}
 
 function uncoverOrDemine(data, action) {
     if (inGame)
@@ -84,6 +95,11 @@ function uncoverOrDemine(data, action) {
 }
 
 function startGame() {
+    users.forEach((u,i)=>{
+        io.to(u.id).emit('start game', i);
+    })
+
+
     let table = JSON.parse(JSON.stringify(Bombs.clearTable))
     table[0][0] = 1
     table[23][23] = 1

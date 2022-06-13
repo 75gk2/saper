@@ -96,3 +96,19 @@ body{
     text-align: center;
     vertical-align: center;
 }
+img{
+    position:absolute;
+    left: 49vw;
+    top:49vh;
+    width:2vh;
+    height:2vh;
+    margin:0 calc(1vw - 1vh);
+}
+#lockGame{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    background-color: rgba(250, 235, 215, 0.3);
+}

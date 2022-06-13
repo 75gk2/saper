@@ -1,6 +1,7 @@
 let game;
 let net;
 let ui;
+let inGame = false
 
 
 window.onload = () => {

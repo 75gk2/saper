@@ -1,4 +1,3 @@
-
 // import * as THREE from 'three';
 const MyPointerLockControls = PointerLockControls
 // import { PointerLockControls } from './jsm/controls/PointerLockControls.js';
@@ -22,22 +21,22 @@ const vertex = new THREE.Vector3();
 const color = new THREE.Color();
 
 
-function init() {
+function init(camera, scene) {
 
-    camera = game.camera
-    scene = game.scene
-    camera.position.y = 10;
+    this.camera = camera
+    this.scene = scene
+    // camera.position.y = 75;
 
-    controls = new MyPointerLockControls( camera, document.body );
+    controls = new MyPointerLockControls(camera, document.body);
 
     // const blocker = document.getElementById( 'blocker' );
-    const instructions = document.getElementsByTagName( 'canvas' )[0]
+    const instructions = document.getElementById('root')
 
-    instructions.addEventListener( 'click', function () {
+    instructions.addEventListener('click', function () {
 
         controls.lock();
 
-    } );
+    });
 
     // controls.addEventListener( 'lock', function () {
     //
@@ -53,11 +52,11 @@ function init() {
     //
     // } );
 
-    scene.add( controls.getObject() );
+    scene.add(controls.getObject());
 
-    const onKeyDown = function ( event ) {
+    const onKeyDown = function (event) {
 
-        switch ( event.code ) {
+        switch (event.code) {
 
             case 'ArrowUp':
             case 'KeyW':
@@ -80,7 +79,7 @@ function init() {
                 break;
 
             case 'Space':
-                if ( canJump === true ) velocity.y += 350;
+                if (canJump === true) velocity.y += 350;
                 canJump = false;
                 break;
 
@@ -88,9 +87,9 @@ function init() {
 
     };
 
-    const onKeyUp = function ( event ) {
+    const onKeyUp = function (event) {
 
-        switch ( event.code ) {
+        switch (event.code) {
 
             case 'ArrowUp':
             case 'KeyW':
@@ -116,14 +115,13 @@ function init() {
 
     };
 
-    document.addEventListener( 'keydown', onKeyDown );
-    document.addEventListener( 'keyup', onKeyUp );
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
 }
 
 function animate() {
     const time = performance.now();
-
-    if ( controls.isLocked === true ) {
+    if (controls.isLocked === true) {
         //
         // raycaster.ray.origin.copy( controls.getObject().position );
         // raycaster.ray.origin.y -= 10;
@@ -132,19 +130,19 @@ function animate() {
         //
         // const onObject = intersections.length > 0;
 
-        const delta = ( time - prevTime ) / 1000;
+        const delta = (time - prevTime) / 400;
 
         velocity.x -= velocity.x * 10.0 * delta;
         velocity.z -= velocity.z * 10.0 * delta;
 
         velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 
-        direction.z = Number( moveForward ) - Number( moveBackward );
-        direction.x = Number( moveRight ) - Number( moveLeft );
+        direction.z = Number(moveForward) - Number(moveBackward);
+        direction.x = Number(moveRight) - Number(moveLeft);
         direction.normalize(); // this ensures consistent movements in all directions
 
-        if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
-        if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
+        if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
         //
         // if ( onObject === true ) {
         //
@@ -153,9 +151,11 @@ function animate() {
         //
         // }
 
-        controls.moveRight( - velocity.x * delta );
-        controls.moveForward( - velocity.z * delta );
-
+        controls.moveRight(-velocity.x * delta);
+        controls.moveForward(-velocity.z * delta);
+        //
+        // console.log(game.camera.position)
+        net.send("move",{name:ui.name,position:game.camera.position})
         // controls.getObject().position.y += ( velocity.y * delta ); // new behavior
         //
         // if ( controls.getObject().position.y < 10 ) {
