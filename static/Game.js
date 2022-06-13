@@ -63,7 +63,10 @@ class Game {
         this.render()
         this.renderGround()
         this.raycaster()
-        document.getElementById("root").append(this.renderer.domElement);
+        const root = document.getElementById("root")
+        root.append(this.renderer.domElement);
+        // root.addEventListener("click",()=>{
+        // })
 
         window.addEventListener('resize', () => {
             this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -73,10 +76,10 @@ class Game {
 
 
         }, false);
-        this.controls = new PointerLockControls(this.camera, document.body);
+        this.controls = new MyPointerLockControls(this.camera, document.body);
 
 
-// add event listener to show/hide a UI (e.g. the game's menu)
+// // add event listener to show/hide a UI (e.g. the game's menu)
 
         this.controls.addEventListener('lock', function () {
             console.log("lock")
@@ -147,7 +150,9 @@ class Game {
             raycaster.setFromCamera(mouseVector, this.camera);
             const intersects = raycaster.intersectObjects(this.scene.children);
             if (intersects.length > 0) {
-                console.log(e.button)
+                // this.controls.lock();
+                init();
+                animate();
                 if (e.button === 2)
                     this.demining(intersects[0].object)
                 else
