@@ -102,8 +102,15 @@ class Game {
 
     }
 
+    clock = new THREE.Clock();
     render = () => {
         animate();
+        let delta = this.clock.getDelta();
+        // console.log(delta)
+        if (this.mixer) {
+            this.mixer.update(delta)
+            this.mixer.stopAllAction()
+        }
         requestAnimationFrame(this.render);
         this.renderer.render(this.scene, this.camera)
     }
@@ -170,41 +177,45 @@ class Game {
     }
 
     clicked(threeObj) {
-        // console.log(threeObj)
-        // if (threeObj.data.state === 0) {
-        //     console.log("2")
-        console.log("uncover", threeObj.data)
         net.send("uncovering", {x: threeObj.data.x, y: threeObj.data.y, user: ui.name})
-        // }
     }
 
     demining(threeObj) {
-        console.log("demine", threeObj.data)
         net.send("demining", {x: threeObj.data.x, y: threeObj.data.y, user: ui.name})
     }
 
+    mixer
+
     opponentMoved(position) {
-        console.log(position)
-        this.opponent.position.set(position.x, 50, position.z)
+        // this.mixer.clipAction("run").play()
+        this.opponent.position.set(position.x, 25, position.z)
     }
-    startingGame(){
+
+    opponentRotated(angle) {
+        this.opponent.rotation.y = angle - Math.PI / 2
+    }
+
+    startingGame() {
         const modelMaterial = new THREE.MeshBasicMaterial({
             map: new THREE.TextureLoader().load("assets/model/ctf_b.png"), // dowolny plik png, jpg
             morphTargets: true // ta własność odpowiada za możliwość animowania materiału modelu
         })
-        console.log("ok")
         const loader = new THREE.JSONLoader();
+        this.camera.lookAt(0, 0, 0)
         loader.load('assets/model/tris.json', function (geometry) {
             console.log(geometry.animations)
             const meshModel = new THREE.Mesh(geometry, modelMaterial)
             meshModel.name = "name";
-            meshModel.rotation.y = Math.PI * 2 / 3 // ustaw obrót modelu
-            meshModel.position.y = 50 // ustaw pozycje modelu
-            meshModel.scale.set(2, 2, 2); // ustaw skalę modelu
+            meshModel.rotation.y = -game.camera.rotation._y // ustaw obrót modelu
+            meshModel.position.y = 25 // ustaw pozycje modelu
+            meshModel.scale.set(1, 1, 1); // ustaw skalę modelu
             game.scene.add(meshModel)
             game.opponent = meshModel
-            console.log("this.opponent")
-        });
+            game.mixer = new THREE.AnimationMixer(meshModel)
+            console.log(game.camera.rotation)
 
+            net.send("player rotated", {name: ui.name, value: game.camera.rotation._y})
+            net.send("move", {name: ui.name, position: game.camera.position})
+        });
     }
 }

@@ -33,8 +33,8 @@ io.on("connection", (socket) => {
             io.emit("users list", {players: users})
             if (users.length === 2) startGame()
             //ZALOGOWANO POMYŚLNIE
-            socket.on("move", data=>moving(data))
-            socket.on("player rotated", data=>rotating(data))
+            socket.on("move", data => moving(data))
+            socket.on("player rotated", data => rotating(data))
             socket.on("uncovering", data => uncoverOrDemine(data, "uncover"))
             socket.on("demining", data => uncoverOrDemine(data, "demine"))
         } else {
@@ -45,19 +45,24 @@ io.on("connection", (socket) => {
 })
 
 function moving(data) {
-    // console.log("MOOVING")
-    users.forEach(u=>{
-        if(u.name !== data.name){
-            io.to(u.id).emit("opponent moved", {position:data.position})
+    users.forEach(u => {
+        if (u.name !== data.name) {
+            io.to(u.id).emit("opponent moved", {position: data.position})
         }
     })
 }
+
 function rotating(data) {
-    // console.log("MOOVING")
-    users.forEach(u=>{
-        if(u.name !== data.name){
-            io.to(u.id).emit("opponent moved", {position:data.position})
+    users.forEach(u => {
+        if (u.name !== data.name) {
+            io.to(u.id).emit("opponent rotated", {rotate: data.value})
         }
+    })
+}
+
+function endGame(s) {
+    getPoints((err, doc) => {
+        io.emit("end game", {reason: s, points: doc.value})
     })
 }
 
@@ -95,6 +100,16 @@ function uncoverOrDemine(data, action) {
                                         updateMapAndEmit(map)
                                     })
                                     changePointsAndEmit(u.name, points)
+
+                                    let uncoveredExists = false
+                                    fieldsState.forEach(r => {
+                                            if (r.includes(0))
+                                                uncoveredExists = true
+                                        }
+                                    )
+
+                                    if (!uncoveredExists)
+                                        endGame("Odsłonięto wszystkie pola")
                                 }
                             )
                     })
@@ -104,7 +119,7 @@ function uncoverOrDemine(data, action) {
 }
 
 function startGame() {
-    users.forEach((u,i)=>{
+    users.forEach((u, i) => {
         io.to(u.id).emit('start game', i);
     })
 
@@ -164,13 +179,19 @@ function updateMapAndEmit(map) {
 
 function changePointsAndEmit(user, points) {
     getPoints((err, doc) => {
+        let myPoints = {points: 0}
         let currentPoints = doc.value
         currentPoints = currentPoints.map(e => {
-            if (e.name === user)
+            if (e.name === user) {
                 e.points += points
+                myPoints = {points: e.points, user: e.name}
+            }
             return e
         })
         updatePointsAndEmit(currentPoints)
+        if (myPoints.points < 0) {
+            endGame(`gra zakończona, ponieważ gracz ${myPoints.user} osiągnął ${myPoints.points} i przegrał`)
+        }
     })
 }
 

@@ -123,6 +123,11 @@ body {
     transform: rotate(calc(var(--rotate-deg) * -1));
 }
 
+#smallTable tr:nth-child(4) td:nth-child(4) {
+    background-color: red;
+    border-radius: 25px;
+}
+
 img {
     position: absolute;
     left: 49vw;
@@ -148,4 +153,13 @@ img {
     top:50px;
     background-color: red;
     position: absolute;
+    display: none;
+}
+#detector{
+    position: absolute;
+    left: -150px;
+    width:800px;
+    height:1000px;
+    display: none;
+    opacity: 0;
 }

@@ -1,12 +1,7 @@
-// import * as THREE from 'three';
+
 const MyPointerLockControls = PointerLockControls
-// import { PointerLockControls } from './jsm/controls/PointerLockControls.js';
 
-let camera, scene, renderer, controls;
-//
-// const objects = [];
-
-// let raycaster;
+let camera, scene, renderer, controls
 
 let moveForward = false;
 let moveBackward = false;
@@ -25,11 +20,8 @@ function init(camera, scene) {
 
     this.camera = camera
     this.scene = scene
-    // camera.position.y = 75;
-
     controls = new MyPointerLockControls(camera, document.body);
 
-    // const blocker = document.getElementById( 'blocker' );
     const instructions = document.getElementById('root')
 
     instructions.addEventListener('click', function () {
@@ -38,19 +30,6 @@ function init(camera, scene) {
 
     });
 
-    // controls.addEventListener( 'lock', function () {
-    //
-    //     instructions.style.display = 'none';
-    //     blocker.style.display = 'none';
-    //
-    // } );
-    //
-    // controls.addEventListener( 'unlock', function () {
-    //
-    //     // blocker.style.display = 'block';
-    //     // instructions.style.display = '';
-    //
-    // } );
 
     scene.add(controls.getObject());
 
@@ -122,14 +101,6 @@ function init(camera, scene) {
 function animate() {
     const time = performance.now();
     if (controls.isLocked === true) {
-        //
-        // raycaster.ray.origin.copy( controls.getObject().position );
-        // raycaster.ray.origin.y -= 10;
-        //
-        // const intersections = raycaster.intersectObjects( objects, false );
-        //
-        // const onObject = intersections.length > 0;
-
         const delta = (time - prevTime) / 200;
 
         velocity.x -= velocity.x * 10.0 * delta;
@@ -143,13 +114,6 @@ function animate() {
 
         if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
         if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
-        //
-        // if ( onObject === true ) {
-        //
-        //     velocity.y = Math.max( 0, velocity.y );
-        //     canJump = true;
-        //
-        // }
 
         controls.moveRight(-velocity.x * delta);
         controls.moveForward(-velocity.z * delta);
@@ -157,17 +121,6 @@ function animate() {
         // console.log(game.camera.position)
         net.send("move", {name: ui.name, position: game.camera.position})
         decodeValsForMap(game.camera.position.x, game.camera.position.z)
-        // controls.getObject().position.y += ( velocity.y * delta ); // new behavior
-        //
-        // if ( controls.getObject().position.y < 10 ) {
-        //
-        //     velocity.y = 0;
-        //     controls.getObject().position.y = 10;
-        //
-        //     canJump = true;
-        //
-        // }
-
     }
 
     function decodeValsForMap(i, j) {

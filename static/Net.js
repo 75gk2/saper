@@ -12,14 +12,14 @@ class Net {
                 case 0: prePosition = game.fieldsThreeArray[0][0].position;break;
                 case 1: prePosition = game.fieldsThreeArray[23][23].position;break;
             }
-            game.camera.position.set(prePosition.x,100,prePosition.z)
+            game.camera.position.set(prePosition.x,50,prePosition.z)
         })
 
         this.socket.on("accepted user", data => {
             if (data) {
                 ui.accepted()
                 this.socket.on("map", boardUp => {
-                    console.log(boardUp)
+                    // console.log(boardUp)
                     ui.smallTableGenerate(boardUp)
                 })
                 this.socket.on("fields state", fields => {
@@ -34,8 +34,13 @@ class Net {
         })
 
         this.socket.on("opponent moved", data => {
-            console.log(data)
+            // console.log(data)
             game.opponentMoved(data.position)
+        })
+
+        this.socket.on("opponent rotated", data => {
+            // console.log(data)
+            game.opponentRotated(data.rotate)
         })
 
         this.socket.on("points", data => {
@@ -49,6 +54,10 @@ class Net {
 
         this.socket.on("game is full", () => {
             ui.fullGameAlert()
+        })
+
+        this.socket.on("end game",(data)=>{
+            ui.end(data)
         })
     }
 

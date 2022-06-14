@@ -25,6 +25,9 @@ class Ui {
         const login = document.getElementById("ui")
         document.getElementById("lockGame").classList.add("uiGame")
         login.classList.add("uiGame")
+
+        const detector = document.getElementById("detector")
+        detector.style.display="block"
     }
 
     updateUsersList(list) {
@@ -53,10 +56,10 @@ class Ui {
         // })
         const x = this.position.y
         const y = this.position.x
-
-        for (let i = x - 2; i <= x + 2; i++) {
+        const length = 3
+        for (let i = x - length; i <= x + length; i++) {
             let o = "<tr>"
-            for (let j = y - 2; j <= y + 2; j++) {
+            for (let j = y - length; j <= y + length; j++) {
 
                 if (Array.isArray(this.map[i])&&this.map[i][j] !== undefined)
                     if(i==x&&j==y)
@@ -81,5 +84,10 @@ class Ui {
 
     fullGameAlert() {
         alert('To imię jest już zajęte lub gra trwa\njeśli chcesz zakończyć trwającą grę i utworzyć nową naciśnij przycisk "Reset gry"')
+    }
+
+    end(data){
+        alert(data.reason)
+        console.log(data)
     }
 }
