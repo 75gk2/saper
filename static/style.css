@@ -101,19 +101,25 @@ body {
 }
 
 #smallTable {
+    font-size: 100px;
+    letter-spacing: 0;
     position: absolute;
     pointer-events: none;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
+    width: 100px;
+    height: 100px;
+    bottom: 0;
     left: 0;
     padding: 15px;
     text-align: center;
     vertical-align: center;
     transform: rotate(var(--rotate-deg));
+    border-collapse: collapse;
 }
 
 #smallTable td {
+    width:150px;
+    height:150px;
+    border: 1px solid black;
     transform: rotate(calc(var(--rotate-deg) * -1));
 }
 

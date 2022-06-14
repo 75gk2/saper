@@ -1,5 +1,8 @@
 class Ui {
     name
+    position = {x: 0, y: 0}
+    map = []
+
     constructor() {
         const nickInput = document.getElementById("nickInput")
         const submit = document.getElementById("submit")
@@ -12,7 +15,7 @@ class Ui {
             net.send("log in", nickInput.value)
             nickInput.value = ""
         })
-        reset.addEventListener("click", () =>{
+        reset.addEventListener("click", () => {
             console.log("reset")
             net.reset();
         });
@@ -28,34 +31,51 @@ class Ui {
         let s = ""
         s += `Gracze:`
         list.forEach((m, i) => {
-            s += `<p>${i + 1}. ${m.name} ${inGame?" : "+m.points:""}</p>`
-            if(i === 1){
+            s += `<p>${i + 1}. ${m.name} ${inGame ? " : " + m.points : ""}</p>`
+            if (i === 1) {
                 s += `<p>(Gra trwa)</p>`
             }
         })
-        
+
         this.players.innerHTML = s
     }
 
     smallTableGenerate(tab) {
+        this.map = JSON.parse(JSON.stringify(tab))
+        this.smallTablePrinter()
+    }
+
+    smallTablePrinter() {
         let s = ""
-        tab.forEach((c)=>{
+        // this.map.forEach((c)=>{
+        //     c.forEach((k)=>{
+        //     })
+        // })
+        const x = this.position.y
+        const y = this.position.x
+
+        for (let i = x - 2; i <= x + 2; i++) {
             let o = "<tr>"
-            c.forEach((k)=>{
-                o+=`<td>${k}</td>`
-            })
-            o+="</td>"
-            s+=o
-        })
+            for (let j = y - 2; j <= y + 2; j++) {
+
+                if (Array.isArray(this.map[i])&&this.map[i][j] !== undefined)
+                    o += `<td>${this.map[i][j]}</td>`
+                else
+                    o += `<td>⬛</td>`
+            }
+            o += "</td>"
+            s += o
+        }
         this.smallTable.innerHTML = s
     }
 
-    refresh(){
+
+    refresh() {
         window.location.reload();
         console.log("odświerzono")
     }
 
-    fullGameAlert(){
+    fullGameAlert() {
         alert('To imię jest już zajęte lub gra trwa\njeśli chcesz zakończyć trwającą grę i utworzyć nową naciśnij przycisk "Reset gry"')
     }
 }

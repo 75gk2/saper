@@ -130,7 +130,7 @@ function animate() {
         //
         // const onObject = intersections.length > 0;
 
-        const delta = (time - prevTime) / 400;
+        const delta = (time - prevTime) / 200;
 
         velocity.x -= velocity.x * 10.0 * delta;
         velocity.z -= velocity.z * 10.0 * delta;
@@ -155,7 +155,8 @@ function animate() {
         controls.moveForward(-velocity.z * delta);
         //
         // console.log(game.camera.position)
-        net.send("move",{name:ui.name,position:game.camera.position})
+        net.send("move", {name: ui.name, position: game.camera.position})
+        decodeValsForMap(game.camera.position.x, game.camera.position.z)
         // controls.getObject().position.y += ( velocity.y * delta ); // new behavior
         //
         // if ( controls.getObject().position.y < 10 ) {
@@ -169,5 +170,17 @@ function animate() {
 
     }
 
+    function decodeValsForMap(i, j) {
+        let x = Math.round((i - game.offset) / game.side)
+        let y = Math.round((j - game.offset) / game.side)
+        // console.log(x, y)
+        if (ui.position.x !== x || ui.position.y !== y){
+            ui.position = {x: x, y: y}
+            ui.smallTablePrinter()
+        }
+
+    }
+
     prevTime = time;
 }
+
