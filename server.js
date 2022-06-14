@@ -34,6 +34,7 @@ io.on("connection", (socket) => {
             if (users.length === 2) startGame()
             //ZALOGOWANO POMYŚLNIE
             socket.on("move", data=>moving(data))
+            socket.on("player rotated", data=>rotating(data))
             socket.on("uncovering", data => uncoverOrDemine(data, "uncover"))
             socket.on("demining", data => uncoverOrDemine(data, "demine"))
         } else {
@@ -44,6 +45,14 @@ io.on("connection", (socket) => {
 })
 
 function moving(data) {
+    // console.log("MOOVING")
+    users.forEach(u=>{
+        if(u.name !== data.name){
+            io.to(u.id).emit("opponent moved", {position:data.position})
+        }
+    })
+}
+function rotating(data) {
     // console.log("MOOVING")
     users.forEach(u=>{
         if(u.name !== data.name){

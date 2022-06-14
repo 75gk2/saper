@@ -59,11 +59,11 @@ class Game {
 
         // const axes = new THREE.AxesHelper(1000)
         // this.scene.add(axes)
-        const geometry = new THREE.BoxGeometry(100, 100, 100);
-        const material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-        this.opponent = new THREE.Mesh(geometry, material);
-        this.scene.add(this.opponent);
+        // const geometry = new THREE.BoxGeometry(100, 100, 100);
+        // const material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+        // this.opponent = new THREE.Mesh(geometry, material);
 
+        // this.scene.add(this.opponent);
 
         init(this.camera, this.scene);
         this.render()
@@ -186,5 +186,25 @@ class Game {
     opponentMoved(position) {
         console.log(position)
         this.opponent.position.set(position.x, 50, position.z)
+    }
+    startingGame(){
+        const modelMaterial = new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load("assets/model/ctf_b.png"), // dowolny plik png, jpg
+            morphTargets: true // ta własność odpowiada za możliwość animowania materiału modelu
+        })
+        console.log("ok")
+        const loader = new THREE.JSONLoader();
+        loader.load('assets/model/tris.json', function (geometry) {
+            console.log(geometry.animations)
+            const meshModel = new THREE.Mesh(geometry, modelMaterial)
+            meshModel.name = "name";
+            meshModel.rotation.y = Math.PI * 2 / 3 // ustaw obrót modelu
+            meshModel.position.y = 50 // ustaw pozycje modelu
+            meshModel.scale.set(2, 2, 2); // ustaw skalę modelu
+            game.scene.add(meshModel)
+            game.opponent = meshModel
+            console.log("this.opponent")
+        });
+
     }
 }

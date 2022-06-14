@@ -59,7 +59,11 @@ class Ui {
             for (let j = y - 2; j <= y + 2; j++) {
 
                 if (Array.isArray(this.map[i])&&this.map[i][j] !== undefined)
-                    o += `<td>${this.map[i][j]}</td>`
+                    if(i==x&&j==y)
+                        o += `<td><div id="playerIcon"></div>
+                        ${this.map[i][j]}</td>`
+                    else
+                        o += `<td>${this.map[i][j]}</td>`
                 else
                     o += `<td>⬛</td>`
             }

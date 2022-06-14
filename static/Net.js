@@ -5,6 +5,7 @@ class Net {
         this.socket = io();
 
         this.socket.on("start game", i => {
+            game.startingGame()
             inGame = true
             let prePosition
             switch (i){
