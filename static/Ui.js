@@ -47,7 +47,7 @@ class Ui {
             o+="</td>"
             s+=o
         })
-        // this.smallTable.innerHTML = s
+        this.smallTable.innerHTML = s
     }
 
     refresh(){

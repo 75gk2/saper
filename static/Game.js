@@ -59,13 +59,13 @@ class Game {
 
         // const axes = new THREE.AxesHelper(1000)
         // this.scene.add(axes)
-        const geometry = new THREE.BoxGeometry( 100, 100, 100 );
-        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-        this.opponent = new THREE.Mesh( geometry, material );
+        const geometry = new THREE.BoxGeometry(100, 100, 100);
+        const material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+        this.opponent = new THREE.Mesh(geometry, material);
         this.scene.add(this.opponent);
 
 
-        init(this.camera,this.scene);
+        init(this.camera, this.scene);
         this.render()
         this.renderGround()
         this.raycaster()
@@ -105,7 +105,7 @@ class Game {
     render = () => {
         animate();
         requestAnimationFrame(this.render);
-        this.renderer.render(this.scene, this.camera);
+        this.renderer.render(this.scene, this.camera)
     }
 
     renderGround = () => {
@@ -153,8 +153,8 @@ class Game {
         window.addEventListener("mousedown", (e) => {
             let x = e.clientX
             let y = e.clientY
-            x = window.innerWidth/2
-            y = window.innerHeight/2
+            x = window.innerWidth / 2
+            y = window.innerHeight / 2
             // canvas.requestPointerLock()
             mouseVector.x = (x / window.innerWidth) * 2 - 1;
             mouseVector.y = -(y / window.innerHeight) * 2 + 1;
@@ -173,18 +173,18 @@ class Game {
         // console.log(threeObj)
         // if (threeObj.data.state === 0) {
         //     console.log("2")
-        console.log("uncover",threeObj.data)
+        console.log("uncover", threeObj.data)
         net.send("uncovering", {x: threeObj.data.x, y: threeObj.data.y, user: ui.name})
         // }
     }
 
     demining(threeObj) {
-        console.log("demine",threeObj.data)
+        console.log("demine", threeObj.data)
         net.send("demining", {x: threeObj.data.x, y: threeObj.data.y, user: ui.name})
     }
 
-    opponentMoved(position){
+    opponentMoved(position) {
         console.log(position)
-        this.opponent.position.set(position.x,50,position.z)
+        this.opponent.position.set(position.x, 50, position.z)
     }
 }
