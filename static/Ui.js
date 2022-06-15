@@ -83,7 +83,7 @@ class Ui {
     }
 
     fullGameAlert() {
-        alert('To imię jest już zajęte lub gra trwa\njeśli chcesz zakończyć trwającą grę i utworzyć nową naciśnij przycisk "Reset gry"')
+        alert('Gra trwa lub wybrane imie jest już zajęte.\n Jeśli chcesz zakończyć trwającą grę i utworzyć nową naciśnij przycisk "Reset gry"')
     }
 
     end(data){
