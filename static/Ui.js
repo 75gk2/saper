@@ -87,7 +87,9 @@ class Ui {
     }
 
     end(data){
-        alert(data.reason)
-        console.log(data)
+                console.log(data)
+       alert(data.reason)
+        net.reset()
+       
     }
 }
