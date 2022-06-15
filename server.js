@@ -80,7 +80,7 @@ function uncoverOrDemine(data, action) {
                                     if (action === "uncover") {//logika dla odkrycia
                                         if (positions[data.x][data.y] === "🧨") { //czy jest tam bomba
                                             fieldsState[data.x][data.y] = 2 //wysadzenie się
-                                            points = -100
+                                            points = -40
                                         } else {
                                             fieldsState[data.x][data.y] = 1 //odkryte
                                             points = 3
