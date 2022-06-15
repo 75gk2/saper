@@ -91,7 +91,7 @@ class Ui {
        let s = data.reason
        const punkty = data.points
        if(data.points[1].points > data.points[0].points){
-        punkty[0] = data.points[1]
+        punkty[0] = punkty[1]
         punkty[1] = data.points[0]
        }
        punkty.forEach((p)=>{
