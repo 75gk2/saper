@@ -89,11 +89,14 @@ class Ui {
     end(data){
                 console.log(data)
        let s = data.reason
-       const punkty = data.points
+       const punkty = []
        if(data.points[1].points > data.points[0].points){
-        punkty[0] = punkty[1]
-        punkty[1] = data.points[0]
+        punkty.push(data.points[1])
+        punkty.push(data.points[0])
        }
+        else{
+            punkty = data.points
+        }
        punkty.forEach((p)=>{
         s+=`\n Gracz ${p.name}: ${p.points} punktów`
        })
