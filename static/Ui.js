@@ -90,7 +90,7 @@ class Ui {
                 console.log(data)
        let s = data.reason
        data.points.forEach((p)=>{
-        s+=`\n${p.name}:${p.points}`
+        s+=`\n Gracz ${p.name}: ${p.points} punktów`
        })
        alert(s)
         net.reset()
