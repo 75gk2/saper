@@ -88,7 +88,11 @@ class Ui {
 
     end(data){
                 console.log(data)
-       alert(data.reason)
+       let s = data.reason
+       data.points.forEach((p)=>{
+        s+=`\n${p.name}:${p.points}`
+       })
+       alert(s)
         net.reset()
        
     }
